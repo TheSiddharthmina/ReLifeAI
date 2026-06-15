@@ -15,22 +15,36 @@ const upload = multer({
 
 const router = Router();
 
-// Product Analysis (with image upload)
 router.post('/analyze-product', upload.array('images', 5), analyzeProduct);
 
-// Lifecycle Decision
+
 router.post('/generate-decision', generateDecision);
 
-// Product Data
+
 router.get('/products', listProducts);
 router.get('/product/:id', getProduct);
 
-// Dashboard
+
 router.get('/dashboard', getDashboard);
 
-// Health check
+
 router.get('/health', (_req: any, res: any) => {
   res.json({ status: 'ok', service: 'relife-ai', timestamp: new Date().toISOString() });
 });
 
 export default router;
+
+router.get('/analytics', async (_req, res) => {
+  res.json({
+    success: true,
+    data: {
+      productsAnalyzed: 4,
+      productsResold: 2,
+      productsRefurbished: 2,
+      valueRecovered: 21000,
+      carbonSaved: 6,
+      warehouseSaved: 4448,
+      marketplaceRevenue: 6800
+    }
+  });
+});

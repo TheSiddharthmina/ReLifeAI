@@ -8,7 +8,6 @@ export async function register(req: Request, res: Response): Promise<void> {
 
     const requirement = await rmService.registerRequirement(req.body);
 
-    // Auto-run matching
     const matches = await rmService.findMatches((requirement as any)._id.toString());
 
     res.status(201).json({

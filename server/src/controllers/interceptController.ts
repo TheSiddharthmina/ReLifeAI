@@ -1,9 +1,6 @@
 import { Request, Response } from 'express';
 import * as interceptService from '../services/interceptService';
 
-/**
- * POST /api/intercept/analyze
- */
 export async function analyzeIntercept(req: Request, res: Response): Promise<void> {
   try {
     const input = req.body;
@@ -36,9 +33,6 @@ export async function analyzeIntercept(req: Request, res: Response): Promise<voi
   }
 }
 
-/**
- * GET /api/intercept/:productId
- */
 export async function getIntercept(req: Request, res: Response): Promise<void> {
   try {
     const { productId } = req.params;
@@ -56,9 +50,6 @@ export async function getIntercept(req: Request, res: Response): Promise<void> {
   }
 }
 
-/**
- * GET /api/intercept/dashboard/stats
- */
 export async function getDashboard(req: Request, res: Response): Promise<void> {
   try {
     const stats = await interceptService.getDashboardStats();

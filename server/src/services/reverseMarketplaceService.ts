@@ -1,9 +1,6 @@
 import { BuyerRequirement, IBuyerRequirement } from '../models/BuyerRequirement';
 import { InventoryMatch, IInventoryMatch, IMatchedProduct } from '../models/InventoryMatch';
 
-// ══════════════════════════════════════════════════════════════
-// SIMULATED INVENTORY (returned/refurbished products)
-// ══════════════════════════════════════════════════════════════
 
 const SIMULATED_INVENTORY = [
   { productId: 'INV-001', name: 'Dell XPS 15 Laptop', brand: 'Dell', category: 'electronics', price: 48000, conditionScore: 88, batteryHealth: 91, refurbishmentGrade: 'grade_a', productAge: 10 },
@@ -18,28 +15,22 @@ const SIMULATED_INVENTORY = [
   { productId: 'INV-010', name: 'iPad Pro 12.9', brand: 'Apple', category: 'electronics', price: 55000, conditionScore: 87, batteryHealth: 90, refurbishmentGrade: 'grade_a', productAge: 11 },
 ];
 
-// ══════════════════════════════════════════════════════════════
-// MATCHING FORMULA
-// ══════════════════════════════════════════════════════════════
 
 function calculateMatchScore(requirement: IBuyerRequirement, product: any): IMatchedProduct | null {
-  // Category fit (must match)
   const categoryFit = product.category.toLowerCase() === requirement.category.toLowerCase() ? 100 : 0;
   if (categoryFit === 0) return null;
 
-  // Budget fit
   let budgetFit = 0;
   if (product.price >= requirement.budgetMin && product.price <= requirement.budgetMax) {
     budgetFit = 100;
   } else if (product.price < requirement.budgetMin) {
-    budgetFit = 80; // Under budget is okay
+    budgetFit = 80; 
   } else {
     const overBy = ((product.price - requirement.budgetMax) / requirement.budgetMax) * 100;
     budgetFit = Math.max(0, 60 - overBy * 2);
   }
   if (budgetFit < 30) return null;
 
-  // Condition fit
   let conditionFit = 0;
   if (product.conditionScore >= requirement.minConditionScore) {
     conditionFit = 80 + ((product.conditionScore - requirement.minConditionScore) / 20) * 20;
@@ -49,8 +40,7 @@ function calculateMatchScore(requirement: IBuyerRequirement, product: any): IMat
   }
   if (conditionFit < 30) return null;
 
-  // Brand fit
-  let brandFit = 50; // Neutral
+  let brandFit = 50;
   if (requirement.brandPreferences.length > 0) {
     const brandMatch = requirement.brandPreferences.some(
       (b) => b.toLowerCase() === product.brand.toLowerCase()
@@ -58,22 +48,18 @@ function calculateMatchScore(requirement: IBuyerRequirement, product: any): IMat
     brandFit = brandMatch ? 100 : 30;
   }
 
-  // Battery check
   if (product.batteryHealth < requirement.minBatteryHealth) {
     return null;
   }
 
-  // Age check
   if (product.productAge > requirement.maxProductAge) {
     return null;
   }
 
-  // Grade check
   if (requirement.acceptableGrades.length > 0 && !requirement.acceptableGrades.includes(product.refurbishmentGrade)) {
     return null;
   }
 
-  // Overall match score
   const matchScore = Math.round(
     categoryFit * 0.30 +
     budgetFit * 0.30 +
@@ -102,9 +88,6 @@ function calculateMatchScore(requirement: IBuyerRequirement, product: any): IMat
   };
 }
 
-// ══════════════════════════════════════════════════════════════
-// COST SAVINGS
-// ══════════════════════════════════════════════════════════════
 
 function calculateCostSaved(matchCount: number, avgPrice: number) {
   const warehouseStorage = matchCount * 180;
@@ -113,9 +96,6 @@ function calculateCostSaved(matchCount: number, avgPrice: number) {
   return { warehouseStorage, handling, inventoryAging, totalSaved: warehouseStorage + handling + inventoryAging };
 }
 
-// ══════════════════════════════════════════════════════════════
-// VALIDATION
-// ══════════════════════════════════════════════════════════════
 
 export function validateRegisterInput(input: any): string[] {
   const errors: string[] = [];
@@ -132,9 +112,6 @@ export function validateRegisterInput(input: any): string[] {
   return errors;
 }
 
-// ══════════════════════════════════════════════════════════════
-// MAIN FUNCTIONS
-// ══════════════════════════════════════════════════════════════
 
 export async function registerRequirement(input: any): Promise<IBuyerRequirement> {
   const requirement = await BuyerRequirement.create({
@@ -162,7 +139,6 @@ export async function registerRequirement(input: any): Promise<IBuyerRequirement
 export async function findMatches(requirementId?: string): Promise<IInventoryMatch[]> {
   const startTime = Date.now();
 
-  // Get active requirements
   const filter: any = { status: 'active' };
   if (requirementId) filter._id = requirementId;
 
@@ -177,7 +153,6 @@ export async function findMatches(requirementId?: string): Promise<IInventoryMat
       if (match) matches.push(match);
     }
 
-    // Sort by match score
     matches.sort((a, b) => b.matchScore - a.matchScore);
     const topMatches = matches.slice(0, 5);
 
@@ -205,7 +180,6 @@ export async function findMatches(requirementId?: string): Promise<IInventoryMat
 
       results.push(match);
 
-      // Update requirement status
       if (topMatches[0].matchScore >= 80) {
         await BuyerRequirement.findByIdAndUpdate((req as any)._id, { status: 'matched' });
       }
@@ -219,7 +193,6 @@ export async function sendNotification(matchId: string): Promise<{ sent: boolean
   const match = await InventoryMatch.findById(matchId);
   if (!match) return { sent: false, message: 'Match not found' };
 
-  // Simulate notification
   match.notificationSent = true;
   match.notificationSentAt = new Date();
   match.buyerResponse = 'pending';

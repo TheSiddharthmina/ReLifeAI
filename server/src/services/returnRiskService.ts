@@ -1,9 +1,7 @@
 import { ReturnRiskPrediction, IReturnRiskPrediction, IFeatureVector, RiskLevel } from '../models/ReturnRiskPrediction';
 import { runEnsemblePrediction, retrainModels, RetrainingResult } from './mlPipeline';
 
-// ══════════════════════════════════════════════════════════════
-// RISK LEVEL CLASSIFICATION
-// ══════════════════════════════════════════════════════════════
+
 
 function classifyRiskLevel(probability: number): RiskLevel {
   if (probability <= 0.20) return 'LOW';
@@ -11,9 +9,7 @@ function classifyRiskLevel(probability: number): RiskLevel {
   return 'HIGH';
 }
 
-// ══════════════════════════════════════════════════════════════
-// RISK FACTOR IDENTIFICATION
-// ══════════════════════════════════════════════════════════════
+
 
 function identifyRiskFactors(features: IFeatureVector, probability: number): string[] {
   const factors: string[] = [];
@@ -43,7 +39,6 @@ function identifyRiskFactors(features: IFeatureVector, probability: number): str
     factors.push('No warranty coverage may increase buyer dissatisfaction risk');
   }
 
-  // Ensure at least one factor
   if (factors.length === 0) {
     if (probability < 0.20) {
       factors.push('All risk indicators within acceptable thresholds');
@@ -55,9 +50,6 @@ function identifyRiskFactors(features: IFeatureVector, probability: number): str
   return factors;
 }
 
-// ══════════════════════════════════════════════════════════════
-// MITIGATION SUGGESTIONS
-// ══════════════════════════════════════════════════════════════
 
 function generateMitigationSuggestions(features: IFeatureVector, riskLevel: RiskLevel): string[] {
   const suggestions: string[] = [];
@@ -95,9 +87,6 @@ function generateMitigationSuggestions(features: IFeatureVector, riskLevel: Risk
   return suggestions;
 }
 
-// ══════════════════════════════════════════════════════════════
-// INPUT VALIDATION
-// ══════════════════════════════════════════════════════════════
 
 export function validateInput(input: any): string[] {
   const errors: string[] = [];
@@ -120,14 +109,11 @@ export function validateInput(input: any): string[] {
   return errors;
 }
 
-// ══════════════════════════════════════════════════════════════
-// MAIN PREDICTION ENGINE
-// ══════════════════════════════════════════════════════════════
+
 
 export async function predictReturnRisk(input: any): Promise<IReturnRiskPrediction> {
   const startTime = Date.now();
 
-  // Build feature vector
   const featureVector: IFeatureVector = {
     category: input.category || 'other',
     brand: input.brand || 'Unknown',
@@ -144,19 +130,15 @@ export async function predictReturnRisk(input: any): Promise<IReturnRiskPredicti
     pricePoint: input.pricePoint || 0,
   };
 
-  // Run ML ensemble
   const ensemble = runEnsemblePrediction(featureVector);
 
-  // Classify risk
   const riskLevel = classifyRiskLevel(ensemble.finalProbability);
 
-  // Identify factors and suggestions
   const riskFactors = identifyRiskFactors(featureVector, ensemble.finalProbability);
   const mitigationSuggestions = generateMitigationSuggestions(featureVector, riskLevel);
 
   const processingTimeMs = Date.now() - startTime;
 
-  // Store prediction
   const prediction = await ReturnRiskPrediction.create({
     productId: input.productId,
     returnProbability: ensemble.finalProbability,
@@ -179,9 +161,6 @@ export async function predictReturnRisk(input: any): Promise<IReturnRiskPredicti
   return prediction;
 }
 
-// ══════════════════════════════════════════════════════════════
-// QUERY FUNCTIONS
-// ══════════════════════════════════════════════════════════════
 
 export async function getPredictionByProductId(productId: string): Promise<IReturnRiskPrediction | null> {
   return ReturnRiskPrediction.findOne({ productId }).sort({ createdAt: -1 });

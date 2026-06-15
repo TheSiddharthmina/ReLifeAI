@@ -29,7 +29,6 @@ export async function getTrustScore(req: Request, res: Response): Promise<void> 
     const { productId } = req.params;
     let score = await trustService.getTrustScore(String(productId));
     if (!score) {
-      // Generate on-the-fly
       score = await trustService.generateTrustScore({ productId: String(productId), category: 'electronics', conditionScore: 75 });
     }
     res.status(200).json({ success: true, data: score });

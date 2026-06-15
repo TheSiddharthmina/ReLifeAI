@@ -237,36 +237,62 @@ export async function getTopBuyers(productId: string): Promise<IBuyerScore | nul
 }
 
 export async function getDashboardStats() {
-  const totalMatches = await InventoryMatch.countDocuments();
+ const matches = await InventoryMatch.find().lean() as any[];
 
-  const recentMatches = await InventoryMatch.find()
-    .sort({ createdAt: -1 })
-    .limit(10)
-    .lean();
+  const totalMatches = matches.length;
+
+  const recentMatches = matches
+    .sort((a, b) =>
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+    .slice(0, 10);
 
   const avgMatchScore =
-    recentMatches.length > 0
+    totalMatches > 0
       ? Math.round(
-          recentMatches.reduce(
-            (sum, match) => sum + (match.bestMatchScore || 0),
+          matches.reduce(
+            (sum, m) => sum + (m.bestMatchScore || 0),
             0
-          ) / recentMatches.length
+          ) / totalMatches
         )
       : 0;
 
-  const totalCostSaved = recentMatches.reduce(
-    (sum, match) => sum + (match.costSaved?.totalSaved || 0),
+  const totalCostSaved = matches.reduce(
+    (sum, m) => sum + (m.costSaved?.totalSaved || 0),
     0
   );
 
+  const avgRetentionPrediction =
+    totalMatches > 0
+      ? Math.round(
+          matches.reduce(
+            (sum, m) => sum + (m.retentionPrediction || 0),
+            0
+          ) / totalMatches
+        )
+      : 0;
+
+  const avgBestMatchScore =
+    totalMatches > 0
+      ? Math.round(
+          matches.reduce(
+            (sum, m) => sum + (m.bestMatchScore || 0),
+            0
+          ) / totalMatches
+        )
+      : 0;
+
   return {
     totalMatches,
+    matchedBuyers: totalMatches, 
+
     avgMatchScore,
-    avgRetentionPrediction: 0,
-    avgBestMatchScore: avgMatchScore,
+    avgBestMatchScore,
+    avgRetentionPrediction,
+
     totalCostSaved,
+    recoveredRevenue: totalCostSaved, 
+
     recentMatches,
   };
 }
-
-  

@@ -17,7 +17,6 @@ export async function uploadProductImage(
   mimeType: string,
   productId: string
 ): Promise<UploadResult> {
-  // Resize and optimize image for analysis
   const optimizedBuffer = await sharp(fileBuffer)
     .resize(1024, 1024, { fit: 'inside', withoutEnlargement: true })
     .jpeg({ quality: 85 })

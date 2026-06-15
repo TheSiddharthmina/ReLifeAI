@@ -15,7 +15,6 @@ export async function analyzeImage(s3Key: string): Promise<IRekognitionResult> {
     },
   };
 
-  // Run all detections in parallel
   const [labelsResponse, moderationResponse, textResponse] = await Promise.all([
     rekognitionClient.send(
       new DetectLabelsCommand({
@@ -38,19 +37,16 @@ export async function analyzeImage(s3Key: string): Promise<IRekognitionResult> {
     ),
   ]);
 
-  // Extract labels
   const labels = (labelsResponse.Labels || []).map((l) => ({
     name: l.Name || '',
     confidence: l.Confidence || 0,
   }));
 
-  // Extract moderation labels
   const moderationLabels = (moderationResponse.ModerationLabels || []).map((l) => ({
     name: l.Name || '',
     confidence: l.Confidence || 0,
   }));
 
-  // Extract image properties
   const imgProps = labelsResponse.ImageProperties;
   const dominantColors = (imgProps?.DominantColors || []).slice(0, 5).map((c) => ({
     color: `rgb(${c.Red || 0}, ${c.Green || 0}, ${c.Blue || 0})`,
@@ -62,7 +58,6 @@ export async function analyzeImage(s3Key: string): Promise<IRekognitionResult> {
   const brightness = foreground?.Quality?.Brightness || 0;
   const contrast = foreground?.Quality?.Contrast || 0;
 
-  // Extract text
   const textDetections = (textResponse.TextDetections || [])
     .filter((t) => t.Type === 'LINE')
     .map((t) => t.DetectedText || '')

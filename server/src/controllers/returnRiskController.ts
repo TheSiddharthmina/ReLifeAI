@@ -1,21 +1,16 @@
 import { Request, Response } from 'express';
 import * as returnRiskService from '../services/returnRiskService';
 
-/**
- * POST /api/return-risk/predict
- */
 export async function predictReturnRisk(req: Request, res: Response): Promise<void> {
   try {
     const input = req.body;
 
-    // Validate
     const errors = returnRiskService.validateInput(input);
     if (errors.length > 0) {
       res.status(400).json({ success: false, error: 'Validation failed', details: errors });
       return;
     }
 
-    // Run prediction
     const prediction = await returnRiskService.predictReturnRisk(input);
 
     res.status(201).json({
@@ -42,9 +37,6 @@ export async function predictReturnRisk(req: Request, res: Response): Promise<vo
   }
 }
 
-/**
- * GET /api/return-risk/:productId
- */
 export async function getPrediction(req: Request, res: Response): Promise<void> {
   try {
     const { productId } = req.params;
@@ -62,9 +54,7 @@ export async function getPrediction(req: Request, res: Response): Promise<void> 
   }
 }
 
-/**
- * GET /api/return-risk/dashboard/stats
- */
+
 export async function getDashboard(req: Request, res: Response): Promise<void> {
   try {
     const stats = await returnRiskService.getDashboardStats();
@@ -75,9 +65,7 @@ export async function getDashboard(req: Request, res: Response): Promise<void> {
   }
 }
 
-/**
- * GET /api/return-risk/high-risk
- */
+
 export async function getHighRisk(req: Request, res: Response): Promise<void> {
   try {
     const limit = parseInt(req.query.limit as string) || 20;
@@ -89,9 +77,7 @@ export async function getHighRisk(req: Request, res: Response): Promise<void> {
   }
 }
 
-/**
- * POST /api/return-risk/retrain
- */
+
 export async function retrainModels(req: Request, res: Response): Promise<void> {
   try {
     console.log('[Engine 4] Starting model retraining...');
