@@ -23,7 +23,7 @@ export default function ReturnRisk() {
         Return Risk Engine
       </h1>
 
-      {/* KPI Cards */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white p-6 rounded-xl border shadow-sm">
           <p className="text-sm text-gray-500">Total Predictions</p>
@@ -54,7 +54,7 @@ export default function ReturnRisk() {
         </div>
       </div>
 
-      {/* High Risk Products */}
+      {}
       <div className="bg-white rounded-xl border shadow-sm p-6">
         <h2 className="text-xl font-semibold mb-4">
           High Risk Products
@@ -102,7 +102,7 @@ export default function ReturnRisk() {
         )}
       </div>
 
-      {/* Summary */}
+      {}
       <div className="bg-white rounded-xl border shadow-sm p-6">
         <h2 className="text-xl font-semibold mb-4">
           Risk Summary

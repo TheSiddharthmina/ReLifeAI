@@ -39,7 +39,7 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      {/* KPI Cards */}
+      {}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="bg-white rounded-xl shadow-sm border p-6">
           <p className="text-sm text-gray-500">Products Processed</p>
@@ -59,7 +59,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Recent Products */}
+      {}
       {products.length > 0 && (
         <div className="bg-white rounded-xl shadow-sm border p-6">
           <h2 className="text-lg font-semibold mb-4">Recent Products</h2>

@@ -39,7 +39,6 @@ export default function SubmitProduct() {
   const [error, setError] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
 
-  // ─── Image Upload Logic ───────────────────────────────────
 
   function validateFile(file: File): boolean {
     const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
@@ -115,7 +114,6 @@ export default function SubmitProduct() {
     setAnalyzing(true);
     setError(null);
 
-    // Simulate AI analysis (3 seconds)
     await new Promise((resolve) => setTimeout(resolve, 3000));
 
     const mockResult: AnalysisResult = {
@@ -130,8 +128,6 @@ export default function SubmitProduct() {
     setAnalysisResult(mockResult);
     setAnalyzing(false);
   }
-
-  // ─── Form Logic ───────────────────────────────────────────
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
     const { name, value } = e.target;
@@ -164,8 +160,6 @@ export default function SubmitProduct() {
         originalPrice: form.originalPrice ? parseFloat(form.originalPrice) : undefined,
         weight: form.weight ? parseFloat(form.weight) : undefined,
       };
-
-      // Send actual image files to backend
       const imageFiles = images.map((img) => img.file);
       const result = await analyzeProduct(payload, imageFiles);
       navigate(`/product/${result.product._id}`);
@@ -176,8 +170,6 @@ export default function SubmitProduct() {
     }
   }
 
-
-  // ─── Render ───────────────────────────────────────────────
 
   const CATEGORIES = [
     { value: 'electronics', label: 'Electronics' },
@@ -216,7 +208,7 @@ export default function SubmitProduct() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      {/* Header */}
+      {}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Submit Returned Product</h1>
         <p className="mt-2 text-gray-600">
@@ -224,7 +216,7 @@ export default function SubmitProduct() {
         </p>
       </div>
 
-      {/* Error Alert */}
+      {}
       {error && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
           <svg className="w-5 h-5 text-red-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -236,12 +228,12 @@ export default function SubmitProduct() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
 
-        {/* ═══ IMAGE UPLOAD SECTION ═══ */}
+        {}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Product Images</h2>
           <p className="text-sm text-gray-500 mb-4">Upload up to 5 images of the returned product for AI analysis.</p>
 
-          {/* Drop Zone */}
+          {}
           <div
             onDrop={handleDrop}
             onDragOver={handleDragOver}
@@ -270,7 +262,7 @@ export default function SubmitProduct() {
             <p className="mt-1 text-xs text-gray-500">JPG, PNG, WebP up to 10MB each. Max 5 images.</p>
           </div>
 
-          {/* Image Previews */}
+          {}
           {images.length > 0 && (
             <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
               {images.map((img) => (
@@ -293,7 +285,7 @@ export default function SubmitProduct() {
             </div>
           )}
 
-          {/* Analyze Images Button */}
+          {}
           {images.length > 0 && (
             <div className="mt-4">
               <button
@@ -323,7 +315,7 @@ export default function SubmitProduct() {
             </div>
           )}
 
-          {/* Analysis Results */}
+          {}
           {analysisResult && (
             <div className="mt-5 p-5 bg-gradient-to-br from-green-50 to-blue-50 border border-green-200 rounded-xl">
               <div className="flex items-center gap-2 mb-4">
@@ -376,7 +368,7 @@ export default function SubmitProduct() {
           )}
         </div>
 
-        {/* ═══ PRODUCT INFO ═══ */}
+        {}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Product Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -409,7 +401,7 @@ export default function SubmitProduct() {
           </div>
         </div>
 
-        {/* ═══ CONDITION ═══ */}
+        {}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Product Condition</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -437,7 +429,7 @@ export default function SubmitProduct() {
           </div>
         </div>
 
-        {/* ═══ RETURN REASON ═══ */}
+        {}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Return Details</h2>
           <label className="block text-sm font-medium text-gray-700 mb-1">Return Reason <span className="text-red-500">*</span></label>
@@ -447,7 +439,7 @@ export default function SubmitProduct() {
           </select>
         </div>
 
-        {/* ═══ SUBMIT ═══ */}
+        {}
         <div className="flex items-center justify-between pt-2">
           <p className="text-sm text-gray-500"><span className="text-red-500">*</span> Required fields</p>
           <button
